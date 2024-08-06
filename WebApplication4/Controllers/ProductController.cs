@@ -46,7 +46,7 @@ public class ProductController: ControllerBase
     public async Task<ActionResult<Product>> UpdatePatchProduct(int id, [FromBody] float price)
     {
         var product = await _context.Product.FindAsync(id);
-        product.price = price;
+        product.Price = price;
         await _context.SaveChangesAsync();
         return Ok(product);
     }
@@ -56,9 +56,9 @@ public class ProductController: ControllerBase
     {
         if (order.ToLower() == "desc")
         {
-            return await _context.Product.OrderByDescending(p => p.price).ToListAsync();
+            return await _context.Product.OrderByDescending(p => p.Price).ToListAsync();
         }
-        return await _context.Product.OrderBy(p => p.price).ToListAsync();
+        return await _context.Product.OrderBy(p => p.Price).ToListAsync();
     }
     
     [HttpDelete("range-delete")]
