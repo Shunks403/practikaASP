@@ -51,7 +51,45 @@ public class ProductController: ControllerBase
         return Ok(product);
     }
     //<-------------------------------------------------------------------------------------------->
+    [HttpGet("sorted")]
+    public async Task<ActionResult<IEnumerable<Product>>> GetSortedProducts([FromBody] string order)
+    {
+        if (order.ToLower() == "desc")
+        {
+            return await _context.Product.OrderByDescending(p => p.price).ToListAsync();
+        }
+        return await _context.Product.OrderBy(p => p.price).ToListAsync();
+    }
     
+    [HttpDelete("range-delete")]
+    public async Task<ActionResult> DeleteProducts([FromBody] List<int> ids)
+    {
+        var products = await _context.Product.Where(p => ids.Contains(p.Id)).ToListAsync();
+
+        if (products == null || products.Count == 0)
+        {
+            return NotFound();
+        }
+
+        _context.Product.RemoveRange(products);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+    
+    
+    [HttpGet("search")]
+    public async Task<ActionResult<Product>> GetProductByDescriptionWord([FromBody] string keyword)
+    {
+        var product = await _context.Product.FirstOrDefaultAsync(p => p.Discription.Contains(keyword));
+
+        if (product == null)
+        {
+            return NotFound();
+        }
+
+        return product;
+    }
     
     
     
