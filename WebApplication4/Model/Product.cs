@@ -7,4 +7,6 @@ public class Product
     public string Discription { get; set; }
     public float Price { get; set; }
     
+    public int UserId { get; set; }  
+    public User User { get; set; }
 }

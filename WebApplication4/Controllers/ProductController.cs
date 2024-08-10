@@ -25,7 +25,7 @@ public class ProductController: ControllerBase
     [HttpPost]
     public async Task<ActionResult> AddProduct([FromBody] Product product)
     {
-        //тут хочу валидацию , но думаю сделать потом дто и тд , так что не трачу время щас 
+       
         _context.Product.Add(product);
         await _context.SaveChangesAsync();
         return Created();
@@ -90,6 +90,41 @@ public class ProductController: ControllerBase
 
         return product;
     }
+    
+    
+    [HttpGet("user/{userId}")]
+    public async Task<ActionResult<IEnumerable<Product>>> GetProductsByUser([FromBody] int userId)
+    {
+        var user = await _context.User.Include(u => u.Products).FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(user.Products);
+    }
+    
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Product>> GetProductById(int id)
+    {
+        var product = await _context.Product.Include(p => p.User).FirstOrDefaultAsync(p => p.Id == id);
+
+        if (product == null)
+        {
+            return NotFound();
+        }
+
+        return product;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
